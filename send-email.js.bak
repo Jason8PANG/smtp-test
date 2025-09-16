@@ -1,0 +1,43 @@
+// send-email.js
+const nodemailer = require('nodemailer');
+
+// === 配置你的 SMTP 信息 ===
+const smtpConfig = {
+  host: 'smtp.nai-group.com',           // SMTP 服务器地址，如：smtp.163.com、smtp.gmail.com
+  port: 25,                     // 端口：465（SSL）或 587（STARTTLS）
+  secure: false,                  // true for 465, false for other ports
+  ignoreTLS: true
+
+};
+
+// 创建传输器
+const transporter = nodemailer.createTransport(smtpConfig);
+
+// 邮件内容
+const mailOptions = {
+  from: 'jason.pang@nai-group.com',           // 发件人
+  to: 'jason.pang@nai-group.com',                      // 收件人（替换为你的测试邮箱）
+  subject: 'SMTP test email ✔',                      // 主题
+  text: '这是一封通过 Node.js SMTP 发送的测试邮件！', // 纯文本内容
+  html: '<b>这是一封通过 Node.js SMTP 发送的测试邮件！</b><p>如果看到此内容，说明 SMTP 配置成功！🎉</p>' // HTML 内容
+};
+
+// 发送邮件
+async function sendEmail() {
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email Send Successfully');
+    console.log('Message ID:', info.messageId);
+    console.log('Preview URL:', nodemailer.getTestMessageUrl(info)); // 仅对某些服务有效
+  } catch (error) {
+    console.error('❌ Email Delivery Failed');
+    console.error('error code:', error.code);
+    console.error('error message:', error.message);
+    if (error.response) {
+      console.error('error response:', error.response);
+    }
+  }
+}
+
+// 执行发送
+sendEmail();
